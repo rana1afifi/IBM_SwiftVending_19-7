@@ -14,18 +14,64 @@ limitations under the License.
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
+	"time"
+	"strings"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
+
 )
+//Models 
+type Item struct {
+	Flavor           string  `json:"flavor"`
+	ExpiryDate       string  `json:"expirydate"`
+	Price            float64 `json:"price"`
+	Calories         int     `json:"calories"`
+	Brand            string  `json:"brand"`
+	Ingredients      string  `json:"ingredients"`
+	Size             string  `json:"size"`	
+    Code 	         int     `json:"code"`
+	Category         string  `json:"category"`
+	
+}
+
+
+
+type Account struct {
+	Email          string  `json:"email"`
+	Name           string  `json:"name"`
+	CashBalance    float64 `json:"cashBalance"`
+	Password       string  `json:"password"`
+	AssetsIds   []string `json:"assetIds"`
+
+}
+
+type Transaction struct {
+	Code            int   `json:"code"`
+	Email          string   `json:"email"`
+	Date  		   string   `json:"date"`
+	Time   		   int      `json:"time"`
+
+}
+
+
+//Functions
+
+
+
+
+
+
 
 // SimpleChaincode example simple Chaincode implementation
 type SimpleChaincode struct {
 }
 
 func main() {
-	err := shim.Start(new(SimpleChaincode))
+	err := shim.Start(new(SimpleChaincode))     //To Start Chaincode
 	if err != nil {
 		fmt.Printf("Error starting Simple chaincode: %s", err)
 	}
@@ -33,6 +79,7 @@ func main() {
 
 // Init resets all the things
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+	
 	if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	}
@@ -52,8 +99,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	// Handle different functions
 	if function == "init" {
 		return t.Init(stub, "init", args)
-	} else if function == "write" {
-		return t.write(stub, args)
+	} else if function == "CreateTransaction" {
+		return t.CreateTransaction(stub, args)
 	}
 	fmt.Println("invoke did not find func: " + function)
 
@@ -73,9 +120,9 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 	return nil, errors.New("Received unknown function query: " + function)
 }
 
-// write - invoke function to write key/value pair
-func (t *SimpleChaincode) write(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	var key, value string
+// CreateTransaction to add asset to certain userID
+func (t *SimpleChaincode) CreateTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	var userId, assetId string
 	var err error
 	fmt.Println("running write()")
 
@@ -83,14 +130,25 @@ func (t *SimpleChaincode) write(stub shim.ChaincodeStubInterface, args []string)
 		return nil, errors.New("Incorrect number of arguments. Expecting 2. name of the key and value to set")
 	}
 
-	key = args[0] //rename for funsies
-	value = args[1]
-	err = stub.PutState(key, []byte(value)) //write the variable into the chaincode state
+	userId = args[0] 
+	assetId= args[1]
+	var assetIds []string
+        var transaction []string
+	 
+	var trans = Transaction{Code: 5, Email:userId}
+        accountBytes, err := json.Marshal(&trans)
+	if err != nil {
+		fmt.Println("error creating transaction" + Transaction.Code)
+		return nil, errors.New("Error creating transaction " + Transaction.Code)
+	}
+
+        err = stub.PutState(userId, accountBytes) //write the variable into the chaincode state
 	if err != nil {
 		return nil, err
 	}
 	return nil, nil
 }
+
 
 // read - query function to read key/value pair
 func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
