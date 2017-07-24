@@ -169,3 +169,54 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 
 	return trans, nil
 }
+
+
+
+func GetAllTransactions(stub shim.ChaincodeStubInterface , args []string) ([]Transaction, error) {
+
+	var allCPs []CP
+	var key, jsonResp string
+	var err error
+
+	if len(args) != 1 {
+		return nil, errors.New("Incorrect number of arguments. Expecting name of the key to query")
+	}
+
+	key = args[0]
+
+	// Get list of all the keys
+	keysBytes, err := stub.GetState(key)
+	if err != nil {
+		fmt.Println("Error retrieving  keys")
+		return nil, errors.New("Error retrieving paper keys")
+	}
+	var keys []string
+	err = json.Unmarshal(keysBytes, &keys)
+	if err != nil {
+		fmt.Println("Error unmarshalling paper keys")
+		return nil, errors.New("Error unmarshalling paper keys")
+	}
+
+	// Get all the cps
+	for _, value := range keys {
+		cpBytes, err := stub.GetState(value)
+
+		var cp CP
+		err = json.Unmarshal(cpBytes, &cp)
+		if err != nil {
+			fmt.Println("Error retrieving cp " + value)
+			return nil, errors.New("Error retrieving cp " + value)
+		}
+
+		fmt.Println("Appending CP" + value)
+		allCPs = append(allCPs, cp)
+	}
+
+	return allCPs, nil
+}
+
+
+
+
+
+
