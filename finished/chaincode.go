@@ -17,9 +17,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strconv"
-	"time"
-	"strings"
+//	"strconv"
+//	"time"
+//	"strings"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 
