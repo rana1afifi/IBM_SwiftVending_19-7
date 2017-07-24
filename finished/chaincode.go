@@ -152,7 +152,7 @@ func (t *SimpleChaincode) CreateTransaction(stub shim.ChaincodeStubInterface, ar
 		if err != nil {
 			fmt.Println("Error unmarshalling account "  + err.Error())
 */
-        err = stub.PutState(userId, transctionBytes) //write the variable into the chaincode state
+        err = stub.PutState(userId, transactionBytes) //write the variable into the chaincode state
 	if err != nil {
 		fmt.Println("failed to create create transaction")
 		return nil, err
