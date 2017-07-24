@@ -153,7 +153,7 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 		return nil, errors.New(jsonResp)
 	}
 		var keys []string
-          for _, value := range keys {
+          for i := 1; i <= 3; i++ {
 		valAsbytes, err := stub.GetState(value)
 		  var tr Transaction
 		  err = json.Unmarshal(valAsbytes, &tr)
