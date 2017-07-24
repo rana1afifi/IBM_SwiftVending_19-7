@@ -136,7 +136,7 @@ func (t *SimpleChaincode) CreateTransaction(stub shim.ChaincodeStubInterface, ar
         //var transaction_arr []string
 	 
 	//var trans Transaction
-	var trans:=Transaction{assetname: assetId, username:userId, Date:"Monday" , Time:11}
+	 trans:=Transaction{assetname: assetId, username:userId, Date:"Monday" , Time:11}
         transactionBytes, err := json.Marshal(&trans)
 	if err != nil {
 		fmt.Println("error creating transaction" + trans.username) // add transaction code later 
