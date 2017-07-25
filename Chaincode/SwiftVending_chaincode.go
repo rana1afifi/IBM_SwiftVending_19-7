@@ -137,14 +137,15 @@ func (t *SimpleChaincode) CreateTransaction(stub shim.ChaincodeStubInterface, ar
         //var transaction_arr []string
 	 
 	//var trans Transaction
-	 trans:=Transaction{assetname: assetId, username:userId, Date:"Monday" , Time:11}
+	//TRIAL COMMENT STARTS HERE 
+	/* trans:=Transaction{assetname: assetId, username:userId, Date:"Monday" , Time:11}
         transactionBytes, err := json.Marshal(&trans)
 	if err != nil {
 		fmt.Println("error creating transaction" + trans.username) // add transaction code later 
 		return nil, errors.New("Error creating transaction "+trans.username)
 	}
 	
-	/*fmt.Println("Attempting to get state of any existing transaction for " + trans.username)
+	fmt.Println("Attempting to get state of any existing transaction for " + trans.username)
 	existingBytes, err := stub.GetState(trans.username)
        if err == nil {
 		var company Transaction
