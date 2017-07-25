@@ -180,22 +180,8 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
 		return nil, errors.New(jsonResp)
 	}
-		var keys []string
-          for _, value := range keys {
-		valAsbytes, err := stub.GetState(value)
-		  var tr Transaction
-		  err = json.Unmarshal(valAsbytes, &tr)
-		  if err != nil {
-			fmt.Println("Error retrieving tr " + value)
-			return nil, errors.New("Error retrieving tr " + value)
-		}
 
-		fmt.Println("Appending tr" + value)
-		trans = append(trans, tr)
-	}
-
-
-	return trans, nil
+	return valAsbytes, nil
 }
 
 
