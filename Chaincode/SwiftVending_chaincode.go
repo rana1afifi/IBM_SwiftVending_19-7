@@ -116,7 +116,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 				return nil, err1
 			}
 			fmt.Println("All success, returning allTrans")
-			return allCPsBytes, nil
+			return allTransBytes, nil
 		}
 	}
         fmt.Println("query did not find func: " + function)
@@ -178,22 +178,8 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
 		return nil, errors.New(jsonResp)
 	}
-		var keys []string
-          for _, value := range keys {
-		valAsbytes, err := stub.GetState(value)
-		  var tr Transaction
-		  err = json.Unmarshal(valAsbytes, &tr)
-		  if err != nil {
-			fmt.Println("Error retrieving tr " + value)
-			return nil, errors.New("Error retrieving tr " + value)
-		}
 
-		fmt.Println("Appending tr" + value)
-		trans = append(trans, tr)
-	}
-
-
-	return trans, nil
+	return valAsbytes, nil
 }
 
 
@@ -202,7 +188,7 @@ func GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]Transac
 	var history []Transaction
 
 	// Get list of all the keys
-	keysBytes, err := stub.GetState(username)
+	itemsBytes, err := stub.GetState(username)
 	if err != nil {
 		fmt.Println("Error retrieving history")
 		return nil, errors.New("Error retrieving history")
