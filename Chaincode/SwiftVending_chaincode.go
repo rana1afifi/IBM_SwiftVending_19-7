@@ -102,23 +102,20 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 	if function == "read" { //read a variable
 		return t.read(stub, args)
 	
-         } else if function == "GetHistory"
-	{
+         } else if function == "GetHistory"{
 		fmt.Println("Getting all History")
 		allTrans, err := GetHistory(args[0], stub)
 		if err != nil {
 			fmt.Println("Error from getHistory")
 			return nil, err
-		              }   
-		else {
+		                 
+		} else {
 			allTransBytes, err1 := json.Marshal(&allTrans)
 			if err1 != nil {
 				fmt.Println("Error marshalling allTrans")
-				return nil, err1
-			}
+				return nil, err1}
 			fmt.Println("All success, returning allTrans")
-			return allCPsBytes, nil
-		}
+			return allCPsBytes, nil}
 	}
         fmt.Println("query did not find func: " + function)
 	return nil, errors.New("Received unknown function query: " + function)
