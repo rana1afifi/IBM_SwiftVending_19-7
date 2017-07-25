@@ -130,9 +130,9 @@ func (t *SimpleChaincode) CreateTransaction(stub shim.ChaincodeStubInterface, ar
        if len(args) != 2 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 2. name of the key and value to set")
 	}
-*/
+
 	userId = args[0] 
-	assetId= args[1]
+	assetId= args[1]*/
 	//var assetIds []string
         //var transaction_arr []string
 	 
