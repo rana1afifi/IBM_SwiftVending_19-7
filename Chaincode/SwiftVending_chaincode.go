@@ -100,17 +100,16 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 
 	// Handle different functions
 	if function == "read" { //read a variable
-		return t.read(stub, args)}
+		return t.read(stub, args)
 	
-	else if function == "GetHistory"
-	{
+	} else if function == "GetHistory"{
 		fmt.Println("Getting all History")
 		allTrans, err := GetHistory(args[0], stub)
 		if err != nil {
 			fmt.Println("Error from getHistory")
 			return nil, err
-		              }   
-		else {
+		             
+		} else {
 			allTransBytes, err1 := json.Marshal(&allTrans)
 			if err1 != nil {
 				fmt.Println("Error marshalling allTrans")
