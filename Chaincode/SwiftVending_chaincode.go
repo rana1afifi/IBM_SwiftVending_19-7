@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strconv"
-	"time"
-	"strings"
+//	"strconv"
+//	"time"
+//	"strings"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 
@@ -37,8 +37,8 @@ type Account struct {
 }
 
 type Transaction struct {
-	Code            int     `json:"code"`
-	Email          string   `json:"email"`
+	username            string   `json:"username"`
+	assetname          string   `json:"assetname"`
 	Date  		   string   `json:"date"`
 	Time   		   int      `json:"time"`
 
@@ -118,19 +118,29 @@ func (t *SimpleChaincode) CreateTransaction(stub shim.ChaincodeStubInterface, ar
 	}
 
 	userId = args[0] 
-	assetId = args[1]
-	var assetIds []string
-        var transaction []string
-	var code = userId + assetId
-	var trans = Transaction{Code: code, Email:userId, CashBalance: 10000000.0, AssetsIds: assetIds}
-        accountBytes, err := json.Marshal(&trans)
+	assetId= args[1]
+	//var assetIds []string
+        //var transaction_arr []string
+	 
+	//var trans Transaction
+	 trans:=Transaction{assetname: assetId, username:userId, Date:"Monday" , Time:11}
+        transactionBytes, err := json.Marshal(&trans)
 	if err != nil {
-		fmt.Println("error creating transaction" + Transaction.Code)
-		return nil, errors.New("Error creating transaction " + Transaction.Code)
+		fmt.Println("error creating transaction" + trans.username) // add transaction code later 
+		return nil, errors.New("Error creating transaction "+trans.username)
 	}
-
-        err = stub.PutState(userId, accountBytes) //write the variable into the chaincode state
+	
+	/*fmt.Println("Attempting to get state of any existing transaction for " + trans.username)
+	existingBytes, err := stub.GetState(trans.username)
+       if err == nil {
+		var company Transaction
+		err = json.Unmarshal(existingBytes, &company)
+		if err != nil {
+			fmt.Println("Error unmarshalling account "  + err.Error())
+*/
+        err = stub.PutState(userId, transactionBytes) //write the variable into the chaincode state
 	if err != nil {
+		fmt.Println("failed to create create transaction")
 		return nil, err
 	}
 	return nil, nil
