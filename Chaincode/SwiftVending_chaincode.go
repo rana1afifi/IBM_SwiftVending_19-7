@@ -115,7 +115,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 				fmt.Println("Error marshalling allTrans")
 				return nil, err1}
 			fmt.Println("All success, returning allTrans")
-			return allCPsBytes, nil}
+			return allTransBytes, nil}
 	}
         fmt.Println("query did not find func: " + function)
 	return nil, errors.New("Received unknown function query: " + function)
@@ -187,7 +187,7 @@ func GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]Transac
 	var history []Transaction
 
 	// Get list of all the keys
-	keysBytes, err := stub.GetState(username)
+	itemsBytes, err := stub.GetState(username)
 	if err != nil {
 		fmt.Println("Error retrieving history")
 		return nil, errors.New("Error retrieving history")
