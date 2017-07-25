@@ -126,11 +126,11 @@ func (t *SimpleChaincode) CreateTransaction(stub shim.ChaincodeStubInterface, ar
 	var userId, assetId string
 	var err error
 	fmt.Println("running write()")
-
-	if len(args) != 2 {
+/*
+       if len(args) != 2 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 2. name of the key and value to set")
 	}
-
+*/
 	userId = args[0] 
 	assetId= args[1]
 	//var assetIds []string
@@ -154,7 +154,7 @@ func (t *SimpleChaincode) CreateTransaction(stub shim.ChaincodeStubInterface, ar
 			fmt.Println("Error unmarshalling account "  + err.Error())
 */
         //err = stub.PutState(userId, transactionBytes) //write the variable into the chaincode state
-	err = stub.PutState(userId, []byte(assetId))
+	err = stub.PutState(args[0], []byte(args[1]))
 	if err != nil {
 		fmt.Println("failed to create create transaction")
 		return nil, err
