@@ -123,7 +123,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 
 // CreateTransaction to add asset to certain userID
 func (t *SimpleChaincode) CreateTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	var userId, assetId string
+	//var userId, assetId string
 	var err error
 	fmt.Println("running write()")
 /*
