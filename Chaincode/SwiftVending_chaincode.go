@@ -100,10 +100,27 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 
 	// Handle different functions
 	if function == "read" { //read a variable
-		return t.read(stub, args)
+		return t.read(stub, args)}
+	
+	else if function == "GetHistory"
+	{
+		fmt.Println("Getting all History")
+		allTrans, err := GetHistory(args[0], stub)
+		if err != nil {
+			fmt.Println("Error from getHistory")
+			return nil, err
+		              }   
+		else {
+			allTransBytes, err1 := json.Marshal(&allTrans)
+			if err1 != nil {
+				fmt.Println("Error marshalling allTrans")
+				return nil, err1
+			}
+			fmt.Println("All success, returning allTrans")
+			return allCPsBytes, nil
+		}
 	}
-	fmt.Println("query did not find func: " + function)
-
+        fmt.Println("query did not find func: " + function)
 	return nil, errors.New("Received unknown function query: " + function)
 }
 
@@ -179,3 +196,43 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 
 	return trans, nil
 }
+
+
+func GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]Transaction, error) {
+
+	var history []Transaction
+
+	// Get list of all the keys
+	keysBytes, err := stub.GetState(username)
+	if err != nil {
+		fmt.Println("Error retrieving history")
+		return nil, errors.New("Error retrieving history")
+	}
+	var items []string
+	err = json.Unmarshal(itemsBytes, &items)
+	if err != nil {
+		fmt.Println("Error unmarshalling item keys")
+		return nil, errors.New("Error unmarshalling item keys")
+	}
+
+	// Get all the cps
+	for _, value := range items {
+		cpBytes, err := stub.GetState(value)
+
+		var tr Transaction
+		err = json.Unmarshal(cpBytes, &tr)
+		if err != nil {
+			fmt.Println("Error retrieving tr " + value)
+			return nil, errors.New("Error retrieving tr " + value)
+		}
+
+		fmt.Println("Appending CP" + value)
+		history = append(history, tr)
+	}
+
+	return history, nil
+
+
+}
+
+
