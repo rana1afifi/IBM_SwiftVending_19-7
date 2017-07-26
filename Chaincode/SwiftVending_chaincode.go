@@ -183,6 +183,7 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 
 
 func GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]byte, error) {
+enc := json.NewEncoder(fp)
 
 	/*var history []Transaction
 
@@ -223,7 +224,10 @@ func GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]byte, e
 		history=append(history,(string)itemsBytes) 
 	
 	
-             }return (byte)history, nil 
+             }
+	
+        enc.Encode(history)
+	return history, nil 
 
 }
 
