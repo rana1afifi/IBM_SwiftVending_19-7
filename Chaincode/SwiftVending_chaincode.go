@@ -229,7 +229,7 @@ itemsBytes, err := stub.GetState(args[0])
 		return nil, errors.New("Error retrieving history")
 	              }
 
-    var items string
+    var items string=""
 	err = json.Unmarshal(itemsBytes, &items)
 	if err != nil {
 		fmt.Println("Error unmarshalling item keys")
