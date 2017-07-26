@@ -216,13 +216,14 @@ func GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]byte, e
 
 	return history, nil
 */ 
-	var history[] string
-	for i := 0; i <= 3; i++{
+	var history[] byte
+	for i := 0; i <= 3; i++ {
 	        itemsBytes, err := stub.GetState(username)
-		history=append(history, (string)itemsBytes) }
+		
+		history=append(history,itemsBytes) }
 	
 	
-	return (byte)history, nil 
+	return history, nil 
 
 }
 
