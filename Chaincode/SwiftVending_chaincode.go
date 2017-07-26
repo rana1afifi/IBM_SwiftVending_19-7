@@ -185,9 +185,9 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 }
 
 
-func (t *SimpleChaincode)GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]Transaction, error) {
+func (t *SimpleChaincode)GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]byte, error) {
 
-	var history []Transaction
+	var history string
 
 	// Get list of all the keys
 	itemsBytes, err := stub.GetState(username)
@@ -206,7 +206,7 @@ func (t *SimpleChaincode)GetHistory(  username string , stub shim.ChaincodeStubI
 	for _, value := range items {
 		cpBytes, err := stub.GetState(value)
 
-		var tr Transaction
+		var tr string
 		err = json.Unmarshal(cpBytes, &tr)
 		if err != nil {
 			fmt.Println("Error retrieving tr " + value)
@@ -214,7 +214,7 @@ func (t *SimpleChaincode)GetHistory(  username string , stub shim.ChaincodeStubI
 		}
 
 		fmt.Println("Appending CP" + value)
-		history = append(history, tr)
+		history += tr
 	}
 
 	return history, nil
