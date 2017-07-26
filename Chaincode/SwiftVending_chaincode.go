@@ -88,8 +88,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Init(stub, "init", args)
 	} else if function == "CreateTransaction" {
 		return t.CreateTransaction(stub, args)
-	}
-    else if function == "Update" {
+	} else if function == "Update" {
 		return t.Update(args , stub)
 	}
 	fmt.Println("invoke did not find func: " + function)
@@ -222,7 +221,7 @@ func GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]Transac
 
 }
 
-func Update (args[]string , stub shim.ChaincodeStubInterface) ([]Transaction, error)){
+func Update (args[]string , stub shim.ChaincodeStubInterface) ([]byte, error){
 
 itemsBytes, err := stub.GetState(args[0])
 	if err != nil {
