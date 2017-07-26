@@ -220,10 +220,10 @@ func GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]byte, e
 	for i := 0; i <= 3; i++ {
 	        itemsBytes, err := stub.GetState(username)
 		
-		history=append(history,(string)itemsBytes) }
+		history=append(history,(string)itemsBytes) 
 	
 	
-	return (byte[])history, nil 
+             }return (byte)history, nil 
 
 }
 
