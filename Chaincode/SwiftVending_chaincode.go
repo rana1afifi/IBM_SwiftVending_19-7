@@ -217,7 +217,7 @@ func (t *SimpleChaincode)GetHistory(  username string , stub shim.ChaincodeStubI
 		history += tr
 	}
 
-	return history, nil
+	return byte(history), nil
 
 
 }
