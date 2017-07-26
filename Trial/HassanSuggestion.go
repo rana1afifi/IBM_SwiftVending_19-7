@@ -108,7 +108,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 			fmt.Println("All success, returning allTrans")
 			return allTransBytes, nil} */ 
          } else if function == "GetItems"{
-		return t.GetItems(stub , args[0]) 
+		return t.GetItems(stub , args) 
 }
         fmt.Println("query did not find func: " + function)
 	return nil, errors.New("Received unknown function query: " + function)
@@ -122,7 +122,7 @@ func (t *SimpleChaincode) CreateTransaction(stub shim.ChaincodeStubInterface, ar
 /*
        if len(args) != 2 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 2. name of the key and value to set")
-	}
+	}Fget
 	userId = args[0] 
 	assetId= args[1]*/
 	//var assetIds []string
@@ -247,7 +247,7 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
     
     // Generate Random Number 
     var qrcode int
-    qrcode= args[2]  // the QRCODE is already stored in cloudant 
+	qrcode= int(args[2])  // the QRCODE is already stored in cloudant 
     
     // Create Object 
     trans:=Transaction{Username:args[0], ItemName:args[1], QRCode: qrcode}
@@ -261,12 +261,12 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
 	        
     } else {   //Store this Transaction into the database 
         
-        err = stub.PutState(qrcode, []byte(trans))
+        err = stub.PutState(qrcode, transactionBytes)
     }
     
     // needn't check if the user has account because we will store an empty array for every new user 
 	
-	existingBytes, err := stub.GetState(trans.username)  // or args[0]
+	existingBytes, err := stub.GetState(trans.Username)  // or args[0]
        
        if err == nil {
 		var account UserAccount
@@ -277,13 +277,14 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
            
         } else {   // update array of items 
          
-            account.items.append(account.items, qrcode)
-            err = stub.PutState(args[0], []byte(account))
+            account.items.append(account.Items, qrcode)
+	   accountInBytes,err:=json.Marshal(account)	
+            err = stub.PutState(args[0], accountInBytes)
         }
         
 	return nil, nil
 }
-}
+
 
 func (t *SimpleChaincode) GetItems(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) { 
     
@@ -292,8 +293,7 @@ func (t *SimpleChaincode) GetItems(stub shim.ChaincodeStubInterface, args []stri
      var transactions []Transction
     
     accountBytes , err := stub.getState(args[0]) 
-    if err!=nil 
-    {
+    if err!=nil {
             fmt.Println("Error fetching account "  + err.Error())
             return nil, errors.New("Error  fetching account"+args[0])    
         
