@@ -129,12 +129,12 @@ func (t *SimpleChaincode) CreateTransaction(stub shim.ChaincodeStubInterface, ar
 	//var userId, assetId string
 	var err error
 	fmt.Println("running write()")
-/*
+
        if len(args) != 2 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 2. name of the key and value to set")
 	}
-	userId = args[0] 
-	assetId= args[1]*/
+	//userId = args[0] 
+	//assetId= args[1]
 	//var assetIds []string
         //var transaction_arr []string
 	 
@@ -145,18 +145,22 @@ func (t *SimpleChaincode) CreateTransaction(stub shim.ChaincodeStubInterface, ar
 	if err != nil {
 		fmt.Println("error creating transaction" + trans.username) // add transaction code later 
 		return nil, errors.New("Error creating transaction "+trans.username)
-	}
+	} */
 	
-	fmt.Println("Attempting to get state of any existing transaction for " + trans.username)
-	existingBytes, err := stub.GetState(trans.username)
-       if err == nil {
-		var company Transaction
+	fmt.Println("Attempting to get state of any existing transaction for " + args[0])
+	existingBytes, err := stub.GetState(args[0])
+         if err == nil {
+		var company string
 		err = json.Unmarshal(existingBytes, &company)
 		if err != nil {
-			fmt.Println("Error unmarshalling account "  + err.Error())
-*/
+			fmt.Println("Error unmarshalling transaction for check "  + err.Error())
+		} else { // key exists 
+		
+		company+=args[1]; 
+			err= stub.PutState(args[0], []byte(company))}
+	 }else {	 
         //err = stub.PutState(userId, transactionBytes) //write the variable into the chaincode state
-	err = stub.PutState(args[0], []byte(args[1]))
+		 err = stub.PutState(args[0], []byte(args[1]))}
 	if err != nil {
 		fmt.Println("failed to create create transaction")
 		return nil, err
