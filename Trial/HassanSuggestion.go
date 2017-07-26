@@ -235,6 +235,7 @@ return nil , nil
 
 
 
+
 func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) { 
     
     var err error
@@ -264,28 +265,35 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
         err = stub.PutState(qrcode, transactionBytes)
     }
     
-    // needn't check if the user has account because we will store an empty array for every new user 
+  
 	
 	existingBytes, err := stub.GetState(trans.Username)  // or args[0]
-       
-       if err == nil {
-		var account UserAccount
-		err = json.Unmarshal(existingBytes, &account)
-       }if err != nil {
-			fmt.Println("Error unmarshalling account "  + err.Error())
+    // if error ==nil : the user does have an account 
+      
+    if err == nil {
+		   var account UserAccount
+           err2 =: json.Unmarshal(existingBytes, &account)
+        // unmarshal bytes in order to append 
+            if err2==nil  {
+			fmt.Println("Error unmarshalling account "  + err2.Error())
             return nil, errors.New("Error  updating account "+trans.Username)
            
-        } else {   // update array of items 
+            } else {   // update array of items 
          
             account.items.append(account.Items, qrcode)
-	   accountInBytes,err:=json.Marshal(account)	
+	        accountInBytes,err:=json.Marshal(account)	
             err = stub.PutState(args[0], accountInBytes)
         }
+// if account doesn't exist
+    } else {
         
+          acc:=Account{Username:args[0], Items[0]: qrcode}
+          accBytes, err := json.Marshal(&acc)
+          err = stub.PutState(args[0], accBytes)
+    }
+    
 	return nil, nil
 }
-
-
 func (t *SimpleChaincode) GetItems(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) { 
     
        var err error
