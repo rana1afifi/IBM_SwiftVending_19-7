@@ -297,6 +297,10 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
 	   qrarray=append(qrarray,qrcode)
           acc:=UserAccount{Username:args[0], Items: qrarray}
           accBytes, err := json.Marshal(&acc)
+	     if err==nil  {
+			fmt.Println("Error marshalling account "  + err2.Error())
+                        return nil, errors.New("Error  updating account "+trans.Username)
+                      }
           err = stub.PutState(args[0], accBytes)
     }
     
