@@ -283,7 +283,12 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
             } else {   // update array of items 
          
             account.Items= append(account.Items, qrcode)
-	        accountInBytes,err:=json.Marshal(account)	
+	    accountInBytes,err:=json.Marshal(account)
+		     if err==nil  {
+			fmt.Println("Error marshalling account "  + err2.Error())
+                        return nil, errors.New("Error  updating account "+trans.Username)
+                      }
+		    
             err = stub.PutState(args[0], accountInBytes)
         }
 // if account doesn't exist
