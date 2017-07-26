@@ -103,10 +103,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 		return t.read(stub, args)
 	
          } else if function == "GetHistory"{
-		return t.GetHistory(args[0] , stub)
-	} 
-	/*	FUNCTION NEEDS VALIDATIONS 
-                fmt.Println("Getting all History")
+		fmt.Println("Getting all History")
 		allTrans, err := GetHistory(args[0], stub)
 		if err != nil {
 			fmt.Println("Error from getHistory")
@@ -118,8 +115,8 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 				fmt.Println("Error marshalling allTrans")
 				return nil, err1}
 			fmt.Println("All success, returning allTrans")
-			return allTransBytes, nil}
-	} */
+			return shim.Success(([]byte)allTransBytes, nil)}
+	}
         fmt.Println("query did not find func: " + function)
 	return nil, errors.New("Received unknown function query: " + function)
 }
@@ -133,7 +130,6 @@ func (t *SimpleChaincode) CreateTransaction(stub shim.ChaincodeStubInterface, ar
        if len(args) != 2 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 2. name of the key and value to set")
 	}
-
 	userId = args[0] 
 	assetId= args[1]*/
 	//var assetIds []string
@@ -186,9 +182,9 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 }
 
 
-func GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]Transaction, error) {
+func GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]string, error) {
 
-	var history []Transaction
+	/*var history []Transaction
 
 	// Get list of all the keys
 	itemsBytes, err := stub.GetState(username)
@@ -219,8 +215,14 @@ func GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]Transac
 	}
 
 	return history, nil
-
+*/ 
+	var history[] string
+	for i := 0; i <= 3; i++{
+	        itemsBytes, err := stub.GetState(username)
+		history=append(history, (string)itemsBytes) }
+	
+	
+	return history, nil 
 
 }
-
 
