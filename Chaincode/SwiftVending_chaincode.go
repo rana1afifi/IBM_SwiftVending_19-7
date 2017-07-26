@@ -235,7 +235,7 @@ itemsBytes, err := stub.GetState(args[0])
 		fmt.Println("Error unmarshalling item keys")
 		return nil, errors.New("Error unmarshalling item keys")
 	}
-    items=append(items,args[1])
+    items+=args[1]
     err = stub.PutState(args[0], []byte(items))
     
     
