@@ -8,8 +8,8 @@ import (
 //	"time"
 //	"strings"
 
-    "os"
-    "strconv"
+  //  "os"
+//    "strconv"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 
 )
@@ -19,14 +19,14 @@ import (
 type Transaction struct {
 	Username       string     `json:"Username"`
 	ItemName      string      `json:"ItemName"`
-	QRCode  		   int    `json:"QRCode"`
+	QRCode         string    `json:"QRCode"`
 
 }
 
 type UserAccount struct 
 {
     Username       string     `json:"Username"`
-    Items          []int       `json:"Items"`
+    Items          []string       `json:"Items"`
     
     
 }
@@ -249,7 +249,7 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
 	}
     
     // Generate Random Number 
-        qrcode, err := strconv.Atoi(args[2]) // the QRCODE is already stored in cloudant 
+        qrcode= args[2] // the QRCODE is already stored in cloudant 
     
     // Create Object 
     trans:=Transaction{Username:args[0], ItemName:args[1], QRCode: qrcode}
@@ -281,14 +281,14 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
            
             } else {   // update array of items 
          
-            account.items.append(account.Items, qrcode)
+            account.Items.append(account.Items, qrcode)
 	        accountInBytes,err:=json.Marshal(account)	
             err = stub.PutState(args[0], accountInBytes)
         }
 // if account doesn't exist
     } else {
         
-          acc:=Account{Username:args[0], Items[0]: qrcode}
+          acc:=UserAccount{Username:args[0], Items[0]: qrcode}
           accBytes, err := json.Marshal(&acc)
           err = stub.PutState(args[0], accBytes)
     }
@@ -299,7 +299,7 @@ func (t *SimpleChaincode) GetItems(stub shim.ChaincodeStubInterface, args []stri
     
        var err error
     // Get UserAccout 
-     var transactions []Transction
+     var transactions []Transaction
     
     accountBytes , err := stub.GetState(args[0]) 
     if err!=nil {
