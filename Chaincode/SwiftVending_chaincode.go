@@ -190,37 +190,41 @@ func (t *SimpleChaincode)GetHistory(  username string , stub shim.ChaincodeStubI
 	var history string
 
 	// Get list of all the keys
-	itemsBytes, err := stub.GetState(username)
+	resultsIterator, err := stub.GetHistoryForKey(username)
 	if err != nil {
 		fmt.Println("Error retrieving history")
 		return nil, errors.New("Error retrieving history")
 	}
-	var items []string
-	err = json.Unmarshal(itemsBytes, &items)
-	if err != nil {
-		fmt.Println("Error unmarshalling item keys")
-		return nil, errors.New("Error unmarshalling item keys")
-	}
-
-	// Get all the cps
-	for _, value := range items {
-		cpBytes, err := stub.GetState(value)
-
-		var tr string
-		err = json.Unmarshal(cpBytes, &tr)
+	return resultsIterator , nil
+	/*defer resultsIterator.Close()
+	
+	
+	for resultsIterator.HasNext() {
+		txID, historicValue, err := resultsIterator.Next()
 		if err != nil {
-			fmt.Println("Error retrieving tr " + value)
-			return nil, errors.New("Error retrieving tr " + value)
+			return shim.Error(err.Error())
 		}
 
-		fmt.Println("Appending CP" + value)
-		history += tr
+		                           //copy transaction id over
+		json.Unmarshal(historicValue, &history)     //un stringify it aka JSON.parse()
+		if historicValue == nil {                  //marble has been deleted
+			var emptyMarble string
+			//tx.Value = emptyMarble                 //copy nil marble
+		} else {
+			json.Unmarshal(historicValue, &history) //un stringify it aka JSON.parse()
+			//tx.Value = marble                      //copy marble over
+		}
+		history = append(history, tx)              //add this tx to the list
 	}
+	fmt.Printf("- getHistoryForMarble returning:\n%s", history)
 
-	return []byte(history), nil
-
-
+	//change to array of bytes
+	historyAsBytes, _ := json.Marshal(history)     //convert to array of bytes
+	return shim.Success(historyAsBytes) */
 }
+	
+	
+
 
 func (t *SimpleChaincode) Update (stub shim.ChaincodeStubInterface, args[]string) ([]byte, error){
 
