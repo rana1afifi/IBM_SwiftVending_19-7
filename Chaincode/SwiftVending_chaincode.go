@@ -9,6 +9,8 @@ import (
 //	"strings"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"bytes"
+	pb "github.com/hyperledger/fabric/protos/peer"
 
 )
 //Models 
