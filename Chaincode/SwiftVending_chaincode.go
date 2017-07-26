@@ -9,7 +9,6 @@ import (
 //	"strings"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-	"bytes"
 	pb "github.com/hyperledger/fabric/protos/peer"
 
 )
@@ -64,6 +63,7 @@ func main() {
 	if err != nil {
 		fmt.Printf("Error starting Simple chaincode: %s", err)
 	}
+	
 }
 
 // Init resets all the things
@@ -197,8 +197,8 @@ func (t *SimpleChaincode)GetHistory(  username string , stub shim.ChaincodeStubI
 		fmt.Println("Error retrieving history")
 		return nil, errors.New("Error retrieving history")
 	}
-	return resultsIterator , nil
-	/*defer resultsIterator.Close()
+	//return resultsIterator , nil
+	defer resultsIterator.Close()
 	
 	
 	for resultsIterator.HasNext() {
@@ -216,13 +216,13 @@ func (t *SimpleChaincode)GetHistory(  username string , stub shim.ChaincodeStubI
 			json.Unmarshal(historicValue, &history) //un stringify it aka JSON.parse()
 			//tx.Value = marble                      //copy marble over
 		}
-		history = append(history, tx)              //add this tx to the list
+		//history = append(history, tx)              //add this tx to the list
 	}
 	fmt.Printf("- getHistoryForMarble returning:\n%s", history)
 
 	//change to array of bytes
 	historyAsBytes, _ := json.Marshal(history)     //convert to array of bytes
-	return shim.Success(historyAsBytes) */
+	return historyAsBytes , nil
 }
 	
 	
