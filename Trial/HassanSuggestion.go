@@ -285,7 +285,7 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
             account.Items= append(account.Items, qrcode)
 	    accountInBytes,err:=json.Marshal(account)
 		     if err==nil  {
-			fmt.Println("Error marshalling account "  + err2.Error())
+			fmt.Println("Error marshalling account "  + err.Error())
                         return nil, errors.New("Error  updating account "+trans.Username)
                       }
 		    
@@ -298,7 +298,7 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
           acc:=UserAccount{Username:args[0], Items: qrarray}
           accBytes, err := json.Marshal(&acc)
 	     if err==nil  {
-			fmt.Println("Error marshalling account "  + err2.Error())
+			fmt.Println("Error marshalling account "  + err.Error())
                         return nil, errors.New("Error  updating account "+trans.Username)
                       }
           err = stub.PutState(args[0], accBytes)
