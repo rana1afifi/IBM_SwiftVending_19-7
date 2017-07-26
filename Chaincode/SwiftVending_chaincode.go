@@ -221,7 +221,7 @@ enc := json.NewEncoder(fp)
 	for i := 0; i <= 3; i++ {
 	        itemsBytes, err := stub.GetState(username)
 		
-		history=append(history,(string)itemsBytes) 
+		history=append(history,string(itemsBytes[:])) 
 	
 	
              }
