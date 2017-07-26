@@ -1,16 +1,3 @@
-/*
-Copyright IBM Corp 2016 All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-		 http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 package main
 
 import (
@@ -101,6 +88,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Init(stub, "init", args)
 	} else if function == "CreateTransaction" {
 		return t.CreateTransaction(stub, args)
+	} else if function == "Update" {
+		return t.Update(stub , args)
 	}
 	fmt.Println("invoke did not find func: " + function)
 
@@ -114,45 +103,60 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 	// Handle different functions
 	if function == "read" { //read a variable
 		return t.read(stub, args)
+	
+         } else if function == "GetHistory"{
+		return t.GetHistory(args[0] , stub) 
+		/*fmt.Println("Getting all History")
+		allTrans, err := GetHistory(args[0], stub)
+		if err != nil {
+			fmt.Println("Error from getHistory")
+			return nil, err
+		                 
+		} else {
+			allTransBytes, err1 := json.Marshal(&allTrans)
+			if err1 != nil {
+				fmt.Println("Error marshalling allTrans")
+				return nil, err1}
+			fmt.Println("All success, returning allTrans")
+			return allTransBytes, nil} */
 	}
-	fmt.Println("query did not find func: " + function)
-
+        fmt.Println("query did not find func: " + function)
 	return nil, errors.New("Received unknown function query: " + function)
 }
 
 // CreateTransaction to add asset to certain userID
 func (t *SimpleChaincode) CreateTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	var userId, assetId string
+	//var userId, assetId string
 	var err error
 	fmt.Println("running write()")
-
-	if len(args) != 2 {
+/*
+       if len(args) != 2 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 2. name of the key and value to set")
 	}
-
 	userId = args[0] 
-	assetId= args[1]
+	assetId= args[1]*/
 	//var assetIds []string
         //var transaction_arr []string
 	 
 	//var trans Transaction
-	 trans:=Transaction{assetname: assetId, username:userId, Date:"Monday" , Time:11}
+	//TRIAL COMMENT STARTS HERE 
+	/* trans:=Transaction{assetname: assetId, username:userId, Date:"Monday" , Time:11}
         transactionBytes, err := json.Marshal(&trans)
 	if err != nil {
 		fmt.Println("error creating transaction" + trans.username) // add transaction code later 
 		return nil, errors.New("Error creating transaction "+trans.username)
 	}
 	
-	/*fmt.Println("Attempting to get state of any existing transaction for " + trans.username)
+	fmt.Println("Attempting to get state of any existing transaction for " + trans.username)
 	existingBytes, err := stub.GetState(trans.username)
        if err == nil {
-
 		var company Transaction
 		err = json.Unmarshal(existingBytes, &company)
 		if err != nil {
 			fmt.Println("Error unmarshalling account "  + err.Error())
 */
-        err = stub.PutState(userId, transactionBytes) //write the variable into the chaincode state
+        //err = stub.PutState(userId, transactionBytes) //write the variable into the chaincode state
+	err = stub.PutState(args[0], []byte(args[1]))
 	if err != nil {
 		fmt.Println("failed to create create transaction")
 		return nil, err
@@ -178,4 +182,63 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 	}
 
 	return valAsbytes, nil
+}
+
+
+func (t *SimpleChaincode)GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]byte, error) {
+
+	var history string
+
+	// Get list of all the keys
+	itemsBytes, err := stub.GetState(username)
+	if err != nil {
+		fmt.Println("Error retrieving history")
+		return nil, errors.New("Error retrieving history")
+	}
+	var items []string
+	err = json.Unmarshal(itemsBytes, &items)
+	if err != nil {
+		fmt.Println("Error unmarshalling item keys")
+		return nil, errors.New("Error unmarshalling item keys")
+	}
+
+	// Get all the cps
+	for _, value := range items {
+		cpBytes, err := stub.GetState(value)
+
+		var tr string
+		err = json.Unmarshal(cpBytes, &tr)
+		if err != nil {
+			fmt.Println("Error retrieving tr " + value)
+			return nil, errors.New("Error retrieving tr " + value)
+		}
+
+		fmt.Println("Appending CP" + value)
+		history += tr
+	}
+
+	return []byte(history), nil
+
+
+}
+
+func (t *SimpleChaincode) Update (stub shim.ChaincodeStubInterface, args[]string) ([]byte, error){
+
+itemsBytes, err := stub.GetState(args[0])
+	if err != nil {
+		fmt.Println("Error retrieving history")
+		return nil, errors.New("Error retrieving history")
+	              }
+
+    var items string=""
+	err = json.Unmarshal(itemsBytes, &items)
+	if err != nil {
+		fmt.Println("Error unmarshalling item keys")
+		return nil, errors.New("Error unmarshalling item keys")
+	}
+    items+=args[1]
+    err = stub.PutState(args[0], []byte(items))
+    
+    
+return nil , nil 
 }
