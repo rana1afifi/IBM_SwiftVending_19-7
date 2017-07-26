@@ -8,6 +8,8 @@ import (
 //	"time"
 //	"strings"
 
+    "os"
+    "strconv"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 
 )
@@ -247,8 +249,7 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
 	}
     
     // Generate Random Number 
-    var qrcode int
-	qrcode= int(args[2])  // the QRCODE is already stored in cloudant 
+        qrcode, err := strconv.Atoi(args[2]) // the QRCODE is already stored in cloudant 
     
     // Create Object 
     trans:=Transaction{Username:args[0], ItemName:args[1], QRCode: qrcode}
@@ -300,7 +301,7 @@ func (t *SimpleChaincode) GetItems(stub shim.ChaincodeStubInterface, args []stri
     // Get UserAccout 
      var transactions []Transction
     
-    accountBytes , err := stub.getState(args[0]) 
+    accountBytes , err := stub.GetState(args[0]) 
     if err!=nil {
             fmt.Println("Error fetching account "  + err.Error())
             return nil, errors.New("Error  fetching account"+args[0])    
