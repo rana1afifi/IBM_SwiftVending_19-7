@@ -227,7 +227,7 @@ enc := json.NewEncoder(fp)
              }
 	
         enc.Encode(history)
-	return history, nil 
+	return byte[](history), nil 
 
 }
 
