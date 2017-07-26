@@ -89,6 +89,9 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	} else if function == "CreateTransaction" {
 		return t.CreateTransaction(stub, args)
 	}
+    else if function == "Update" {
+		return t.Update(args , stub)
+	}
 	fmt.Println("invoke did not find func: " + function)
 
 	return nil, errors.New("Received unknown function invocation: " + function)
@@ -104,7 +107,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 	
          } else if function == "GetHistory"{
 		fmt.Println("Getting all History")
-		/*allTrans, err := GetHistory(args[0], stub)
+		allTrans, err := GetHistory(args[0], stub)
 		if err != nil {
 			fmt.Println("Error from getHistory")
 			return nil, err
@@ -114,8 +117,8 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 			if err1 != nil {
 				fmt.Println("Error marshalling allTrans")
 				return nil, err1}
-			fmt.Println("All success, returning allTrans")*/ 
-		return GetHistory(args[0], stub)
+			fmt.Println("All success, returning allTrans")
+			return allTransBytes, nil}
 	}
         fmt.Println("query did not find func: " + function)
 	return nil, errors.New("Received unknown function query: " + function)
@@ -182,10 +185,9 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 }
 
 
-func GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]byte, error) {
-enc := json.NewEncoder(fp)
+func GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]Transaction, error) {
 
-	/*var history []Transaction
+	var history []Transaction
 
 	// Get list of all the keys
 	itemsBytes, err := stub.GetState(username)
@@ -216,18 +218,27 @@ enc := json.NewEncoder(fp)
 	}
 
 	return history, nil
-*/ 
-	var history[] string
-	for i := 0; i <= 3; i++ {
-	        itemsBytes, err := stub.GetState(username)
-		
-		history=append(history,string(itemsBytes[:])) 
-	
-	
-             }
-	
-        enc.Encode(history)
-	return byte(history), nil 
+
 
 }
 
+func Update (args[]string , stub shim.ChaincodeStubInterface) ([]Transaction, error)){
+
+itemsBytes, err := stub.GetState(args[0])
+	if err != nil {
+		fmt.Println("Error retrieving history")
+		return nil, errors.New("Error retrieving history")
+	              }
+
+    var items string
+	err = json.Unmarshal(itemsBytes, &items)
+	if err != nil {
+		fmt.Println("Error unmarshalling item keys")
+		return nil, errors.New("Error unmarshalling item keys")
+	}
+    items:=append(items,args[1])
+    err = stub.PutState(args[0], []byte(items))
+    
+    
+
+}
