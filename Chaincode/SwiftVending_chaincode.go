@@ -187,7 +187,7 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 }
 
 
-func (t *SimpleChaincode)GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]byte, error) {
+func (t *SimpleChaincode)GetHistory(  username string , stub shim.ChaincodeStubInterface) pb.response {
 
 	var history string
 
