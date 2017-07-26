@@ -89,7 +89,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	} else if function == "CreateTransaction" {
 		return t.CreateTransaction(stub, args)
 	} else if function == "Update" {
-		return t.Update(args , stub)
+		return Update(args , stub)
 	}
 	fmt.Println("invoke did not find func: " + function)
 
@@ -235,9 +235,9 @@ itemsBytes, err := stub.GetState(args[0])
 		fmt.Println("Error unmarshalling item keys")
 		return nil, errors.New("Error unmarshalling item keys")
 	}
-    items:=append(items,args[1])
+    items=append(items,args[1])
     err = stub.PutState(args[0], []byte(items))
     
     
-
+return nil , nil 
 }
