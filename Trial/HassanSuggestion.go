@@ -75,8 +75,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.CreateTransaction(stub, args)
 	} else if function == "Update" {
 		return t.Update(stub , args)
-	}
-    else if function == "Buy" {
+	} else if function == "Buy" {
 		return t.Buy(stub , args)
 	}
     
@@ -107,8 +106,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 				fmt.Println("Error marshalling allTrans")
 				return nil, err1}
 			fmt.Println("All success, returning allTrans")
-			return allTransBytes, nil} */
-	} 
+			return allTransBytes, nil} */ 
          } else if function == "GetItems"{
 		return t.GetItems(stub , args[0]) 
 }
