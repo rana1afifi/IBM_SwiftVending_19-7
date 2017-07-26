@@ -104,8 +104,8 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 	
          } else if function == "GetHistory"{
 		fmt.Println("Getting all History")
-		allTrans, err := GetHistory(args[0], stub)
-		/*if err != nil {
+		/*allTrans, err := GetHistory(args[0], stub)
+		if err != nil {
 			fmt.Println("Error from getHistory")
 			return nil, err
 		                 
@@ -115,7 +115,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 				fmt.Println("Error marshalling allTrans")
 				return nil, err1}
 			fmt.Println("All success, returning allTrans")*/ 
-			return ([]byte)allTrans, nil
+		return t.GetHistory(args[0], stub)
 	}
         fmt.Println("query did not find func: " + function)
 	return nil, errors.New("Received unknown function query: " + function)
@@ -182,7 +182,7 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 }
 
 
-func GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]string, error) {
+func GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]byte, error) {
 
 	/*var history []Transaction
 
@@ -222,7 +222,7 @@ func GetHistory(  username string , stub shim.ChaincodeStubInterface) ([]string,
 		history=append(history, (string)itemsBytes) }
 	
 	
-	return history, nil 
+	return (byte)history, nil 
 
 }
 
