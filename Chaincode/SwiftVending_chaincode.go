@@ -115,7 +115,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 				fmt.Println("Error marshalling allTrans")
 				return nil, err1}
 			fmt.Println("All success, returning allTrans")*/ 
-		return t.GetHistory(args[0], stub)
+		return GetHistory(args[0], stub)
 	}
         fmt.Println("query did not find func: " + function)
 	return nil, errors.New("Received unknown function query: " + function)
