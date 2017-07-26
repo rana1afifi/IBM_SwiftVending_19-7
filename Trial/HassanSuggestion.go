@@ -241,6 +241,7 @@ return nil , nil
 func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) { 
     
     var err error
+    var qrcode string
 	fmt.Println("running write()")
 
     
@@ -281,7 +282,7 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
            
             } else {   // update array of items 
          
-            account.Items.append(account.Items, qrcode)
+            account.Items= append(account.Items, qrcode)
 	        accountInBytes,err:=json.Marshal(account)	
             err = stub.PutState(args[0], accountInBytes)
         }
