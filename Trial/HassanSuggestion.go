@@ -271,7 +271,7 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
        if err == nil {
 		var account UserAccount
 		err = json.Unmarshal(existingBytes, &account)
-		if err != nil {
+       }if err != nil {
 			fmt.Println("Error unmarshalling account "  + err.Error())
             return nil, errors.New("Error  updating account "+trans.Username)
            
