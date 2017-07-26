@@ -288,8 +288,9 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
         }
 // if account doesn't exist
     } else {
-        
-          acc:=UserAccount{Username:args[0], Items[0]: qrcode}
+           var qrarray []string 
+	   qrarray=append(qrarray,qrcode)
+          acc:=UserAccount{Username:args[0], Items: qrarray}
           accBytes, err := json.Marshal(&acc)
           err = stub.PutState(args[0], accBytes)
     }
