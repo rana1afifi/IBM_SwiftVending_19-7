@@ -103,7 +103,10 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 		return t.read(stub, args)
 	
          } else if function == "GetHistory"{
-		fmt.Println("Getting all History")
+		return t.GetHistory(args[0] , stub)
+	} 
+	/*	FUNCTION NEEDS VALIDATIONS 
+                fmt.Println("Getting all History")
 		allTrans, err := GetHistory(args[0], stub)
 		if err != nil {
 			fmt.Println("Error from getHistory")
@@ -116,7 +119,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 				return nil, err1}
 			fmt.Println("All success, returning allTrans")
 			return allTransBytes, nil}
-	}
+	} */
         fmt.Println("query did not find func: " + function)
 	return nil, errors.New("Received unknown function query: " + function)
 }
