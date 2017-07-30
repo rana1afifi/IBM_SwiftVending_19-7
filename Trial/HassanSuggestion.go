@@ -244,10 +244,15 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
 	
 	
 	// Update account 
-	var items []string
-	items=append(items, args[2]) 
-	acc:=UserAccount{Username:args[0] ,Items:items}
-	accountBytes, err2 := json.Marshal(&acc)
+	
+	var account UserAccount
+	
+	existingBytes, err3 := stub.GetState(args[0]) 
+	err3 = json.Unmarshal(existingBytes, &account)
+	
+	account.Items=append(account.Items, args[2]) 
+	
+	accountBytes, err3 := json.Marshal(&account)
 	
 	err2 = stub.PutState(args[0] ,accountBytes) 
 	
@@ -255,7 +260,10 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
 	if err2==nil{
 		return nil, err
 	}
-		
+	
+	if err3==nil{
+		return nil, err
+	}
 	if err != nil {
 		return nil, err
 	}
