@@ -56,7 +56,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	
         transactionBytes, err := json.Marshal(&trans)
 	// Missing Check here 
-	err2 := stub.PutState(args[2] ,transactionBytes) 
+	err = stub.PutState(args[2] ,transactionBytes) 
 	if err != nil {
 		return nil, err
 	}
