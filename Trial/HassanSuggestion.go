@@ -58,11 +58,11 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 		return nil, errors.New("Incorrect number of arguments. Expecting 3")
 	}
         
-	//trans:=Transaction{Username:args[0], ItemName:args[1], QRCode: args[2]}
+	trans:=Transaction{Username:args[0], ItemName:args[1], QRCode: args[2]}
 	
-       // transactionBytes, err := json.Marshal(&trans)
+        transactionBytes, err := json.Marshal(&trans)
 	// Missing Check here 
-	err := stub.PutState(args[2] ,args[0]) 
+	err := stub.PutState(args[2] ,transactionBytes) 
 	if err != nil {
 		return nil, err
 	}
