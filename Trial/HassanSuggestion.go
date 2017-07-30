@@ -47,16 +47,11 @@ func main() {
 // Init resets all the things
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	
-	if len(args) != 3 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 3")
+	if len(args) != 1 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	}
-        //var trans Transaction
-	//var err error
-	trans:=Transaction{Username:args[0], ItemName:args[1], QRCode: args[2]}
-	
-        transactionBytes, err := json.Marshal(&trans)
-	// Missing Check here 
-	err = stub.PutState(args[2] ,transactionBytes) 
+
+	err := stub.PutState("hello_world", []byte(args[0]))
 	if err != nil {
 		return nil, err
 	}
@@ -237,71 +232,34 @@ return nil , nil
 
 
 func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) { 
-    
-    var err error
-    var qrcode string
-	fmt.Println("running write()")
-
-    
-     if len(args) != 3 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 2. name of the key and value to set")
+  	if len(args) != 3 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 3")
 	}
-    
-    // Generate Random Number 
-        qrcode= args[2] // the QRCODE is already stored in cloudant 
-    
-    // Create Object 
-    trans:=Transaction{Username:args[0], ItemName:args[1], QRCode: qrcode}
-    
-   //Convert it to JsonObject
-    
-    transactionBytes, err := json.Marshal(&trans)
-	if err != nil {
-		fmt.Println("error creating transaction" + trans.Username) // add transaction code later 
-		return nil, errors.New("Error creating transaction "+trans.Username)
-	        
-    } else {   //Store this Transaction into the database 
-        
-        err = stub.PutState(qrcode, transactionBytes)
-    }
-    
-  
+        // Insert Transaction
+	trans:=Transaction{Username:args[0], ItemName:args[1], QRCode: args[2]}
 	
-	existingBytes, err := stub.GetState(trans.Username)  // or args[0]
-    // if error ==nil : the user does have an account 
-      
-    if err == nil {
-		   var account UserAccount
-	    err2 := json.Unmarshal(existingBytes, &account)
-        // unmarshal bytes in order to append 
-            if err2==nil  {
-			fmt.Println("Error unmarshalling account "  + err2.Error())
-            return nil, errors.New("Error  updating account "+trans.Username)
-           
-            } else {   // update array of items 
-         
-            account.Items= append(account.Items, qrcode)
-	    accountInBytes,err:=json.Marshal(account)
-		     if err==nil  {
-			fmt.Println("Error marshalling account "  + err.Error())
-                        return nil, errors.New("Error  updating account "+trans.Username)
-                      }
-		    
-            err = stub.PutState(args[0], accountInBytes)
-        }
-// if account doesn't exist
-    } else {
-           var qrarray []string 
-	   qrarray=append(qrarray,qrcode)
-          acc:=UserAccount{Username:args[0], Items: qrarray}
-          accBytes, err := json.Marshal(&acc)
-	     if err==nil  {
-			fmt.Println("Error marshalling account "  + err.Error())
-                        return nil, errors.New("Error  updating account "+trans.Username)
-                      }
-          err = stub.PutState(args[0], accBytes)
-    }
-    
+        transactionBytes, err := json.Marshal(&trans)
+	// Missing Check here 
+	err = stub.PutState(args[2] ,transactionBytes) 
+	
+	
+	// Update account 
+	var items []string
+	items=append(items, args[2]) 
+	acc:=UserAccount{Username:args[0] ,Items:items}
+	accountBytes, err2 := json.Marshal(&acc)
+	
+	err2 = stub.PutState(args[0] ,accountBytes) 
+	
+	
+	if err2==nil{
+		return nil, err
+	}
+		
+	if err != nil {
+		return nil, err
+	}
+
 	return nil, nil
 }
 func (t *SimpleChaincode) GetItems(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) { 
