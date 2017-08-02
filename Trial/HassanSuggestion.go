@@ -252,7 +252,7 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
 	err3 = json.Unmarshal(existingBytes, &account)
 	
 	account.Transactions=append(account.Transactions, args[3]) 
-	
+	account.Username=args[0] 
 	accountBytes, err3 := json.Marshal(&account)
 	
 	err2 := stub.PutState(args[0] ,accountBytes) 
