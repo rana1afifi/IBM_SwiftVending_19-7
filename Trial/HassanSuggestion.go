@@ -18,15 +18,16 @@ import (
 
 type Transaction struct {
 	Username       string     `json:"Username"`
-	ItemName      string      `json:"ItemName"`
-	QRCode         string    `json:"QRCode"`
+	ItemName       string     `json:"ItemName"`
+	QRCode         string     `json:"QRCode"`
+	TransID        string     `json:"TransID"`
 
 }
 
 type UserAccount struct 
 {
-    Username       string     `json:"Username"`
-    Items          []string       `json:"Items"`
+    Username       string                `json:"Username"`
+    Transactions   []string              `json:"Transactions"`
     
     
 }
@@ -51,7 +52,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	}
 
-	err := stub.PutState("hello_world", []byte(args[0]))
+	err := stub.PutState("SwiftVending", []byte(args[0]))
 	if err != nil {
 		return nil, err
 	}
@@ -232,15 +233,15 @@ return nil , nil
 
 
 func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) { 
-  	if len(args) != 3 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 3")
+  	if len(args) != 4 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 4")
 	}
         // Insert Transaction
-	trans:=Transaction{Username:args[0], ItemName:args[1], QRCode: args[2]}
+	trans:=Transaction{Username:args[0], ItemName:args[1], QRCode: args[2] ,TransID: args[3]}
 	
         transactionBytes, err := json.Marshal(&trans)
 	// Missing Check here 
-	err = stub.PutState(args[2] ,transactionBytes) 
+	err = stub.PutState(args[3] ,transactionBytes) 
 	
 	
 	// Update account 
@@ -250,7 +251,7 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
 	existingBytes, err3 := stub.GetState(args[0]) 
 	err3 = json.Unmarshal(existingBytes, &account)
 	
-	account.Items=append(account.Items, args[2]) 
+	account.Transactions=append(account.Transactions, args[3]) 
 	
 	accountBytes, err3 := json.Marshal(&account)
 	
