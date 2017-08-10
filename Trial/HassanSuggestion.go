@@ -23,6 +23,7 @@ type Transaction struct {
 	TransID        string     `json:"TransID"`
 	Date            string    `json:"Date"`
 	Time           string     `json:"Time"`
+	Price          string     `json:"Price"`
 
 }
 
@@ -115,7 +116,7 @@ func (t *SimpleChaincode) Buy(stub shim.ChaincodeStubInterface, args []string) (
 		return nil, errors.New("Incorrect number of arguments. Expecting 6")
 	}
         // Insert Transaction
-	trans:=Transaction{Username:args[0], ItemName:args[1], QRCode: args[2] ,TransID: args[3], Date:args[4], Time:args[5]}
+	trans:=Transaction{Username:args[0], ItemName:args[1], QRCode: args[2] ,TransID: args[3], Date:args[4], Time:args[5], Price:args[6]}
 	
         transactionBytes, err := json.Marshal(&trans)
 	// Missing Check here 
